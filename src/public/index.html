@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Login e Cadastro</title>
+</head>
+<body>
+  <h1>Cadastro</h1>
+  <input id="reg-username" placeholder="Usuário">
+  <input id="reg-password" type="password" placeholder="Senha">
+  <button onclick="register()">Cadastrar</button>
+
+  <h1>Login</h1>
+  <input id="login-username" placeholder="Usuário">
+  <input id="login-password" type="password" placeholder="Senha">
+  <button onclick="login()">Entrar</button>
+
+  <h2 id="status"></h2>
+
+  <script>
+    async function register() {
+      const username = document.getElementById("reg-username").value;
+      const password = document.getElementById("reg-password").value;
+
+      const res = await fetch("/api/users/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await res.json();
+      document.getElementById("status").innerText = JSON.stringify(data);
+    }
+
+    async function login() {
+      const username = document.getElementById("login-username").value;
+      const password = document.getElementById("login-password").value;
+
+      const res = await fetch("/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await res.json();
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        document.getElementById("status").innerText = "Login bem-sucedido!";
+      } else {
+        document.getElementById("status").innerText = JSON.stringify(data);
+      }
+    }
+  </script>
+</body>
+</html>
